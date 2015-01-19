@@ -1,5 +1,6 @@
 package com.example.toobar;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -37,6 +38,9 @@ public class MainActivity extends ActionBarActivity {
         viewPager = (ViewPager) findViewById(R.id.demo_vp);
 
         // 实例化控件
+        toolbar.setLogo(R.drawable.ic_launcher);
+        toolbar.setTitleTextColor(Color.BLUE);
+        toolbar.setTitle("hello");
         fragments = new ArrayList<Fragment>();
         fragments.add(new Fragment_Tab_1());
         fragments.add(new Fragment_Tab_2());
