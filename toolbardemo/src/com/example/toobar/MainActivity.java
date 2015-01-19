@@ -1,7 +1,6 @@
 package com.example.toobar;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -58,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
         // 设置SlidingTab
         slidingTabLayout.setViewPager(viewPager);
 
+        //更改tabView的宽度
     }
 
     //建立actionBar的选项菜单
