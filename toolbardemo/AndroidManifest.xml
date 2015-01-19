@@ -7,7 +7,7 @@
     <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="21"/>
 
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher" android:allowBackup="true"
-                 android:theme="@style/AppTheme">
+                 android:theme="@style/DefaultBlueTheme">
         <activity android:name="MainActivity"
                   android:label="@string/app_name">
             <intent-filter>

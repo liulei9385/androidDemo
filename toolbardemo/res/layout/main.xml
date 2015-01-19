@@ -4,11 +4,11 @@
                 android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
+            xmlns:app="http://schemas.android.com/apk/res/com.example.toobar"
             android:id="@+id/demo_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"/>
+            app:title="@string/app_name"/>
 
     <com.example.toobar.view.SlidingTabLayout
             android:id="@+id/demo_tab"

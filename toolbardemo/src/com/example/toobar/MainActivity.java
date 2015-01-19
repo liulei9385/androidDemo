@@ -38,9 +38,7 @@ public class MainActivity extends ActionBarActivity {
         viewPager = (ViewPager) findViewById(R.id.demo_vp);
 
         // 实例化控件
-        toolbar.setLogo(R.drawable.ic_launcher);
-        toolbar.setTitleTextColor(Color.BLUE);
-        toolbar.setTitle("hello");
+        setSupportActionBar(toolbar);
         fragments = new ArrayList<Fragment>();
         fragments.add(new Fragment_Tab_1());
         fragments.add(new Fragment_Tab_2());
@@ -50,5 +48,6 @@ public class MainActivity extends ActionBarActivity {
         viewPager.setAdapter(viewPager_Adapter);
         // 设置SlidingTab
         slidingTabLayout.setViewPager(viewPager);
+
     }
 }
