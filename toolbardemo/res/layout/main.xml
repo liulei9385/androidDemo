@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
             android:id="@+id/demo_toolbar"
@@ -11,4 +10,16 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"/>
 
-</LinearLayout>
+    <com.example.toobar.view.SlidingTabLayout
+            android:id="@+id/demo_tab"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/demo_toolbar"/>
+
+    <android.support.v4.view.ViewPager
+            android:id="@+id/demo_vp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/demo_tab"/>
+
+</RelativeLayout>
