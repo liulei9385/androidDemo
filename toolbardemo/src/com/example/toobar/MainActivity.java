@@ -1,9 +1,11 @@
 package com.example.toobar;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.internal.view.SupportMenuItem;
 import android.support.v4.view.MenuItemCompat;
@@ -72,6 +74,11 @@ public class MainActivity extends ActionBarActivity {
         switch (itemId) {
             case 1:
                 showToast(itemId + " ", true);
+
+                //打开系统设置
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
