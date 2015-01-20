@@ -3,12 +3,20 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/ActionBarStyle</item>
         <item name="actionBarSize">48dp</item>
+        <item name="actionButtonStyle">@style/ActionButtonStyle</item>
+    </style>
+    <!--ActionButtonStyle-->
+    <style name="ActionButtonStyle" parent="@style/Widget.AppCompat.Light.ActionButton">
+        <item name="android:minWidth">36dp</item>
+        <item name="android:minHeight">36dp</item>
     </style>
 
+    <!--ActionBarStyle-->
     <style name="ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <item name="background">@color/toolbar_yellow</item>
     </style>
 
+    <!--ToolBarTheme-->
     <style name="ToolBarTheme" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="toolbarStyle">@style/CustomtoolBarStyle</item>
