@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 默认的蓝色风格 -->
+    <style name="DefaultBlueTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <!-- Toolbar风格 -->
+        <item name="toolbarStyle">@style/DefaultBlueToolbar</item>
+    </style>
+
+    <!-- 默认的Toolbar样式 -->
+    <style name="DefaultBlueToolbar" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/default_blue</item>
+    </style>
+
+</resources>
