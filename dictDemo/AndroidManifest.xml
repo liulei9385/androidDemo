@@ -20,6 +20,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.DrawerLayoutActivity"/>
+        <activity android:name=".activity.DrawerLayoutActivity" android:theme="@style/ToolBarTheme"/>
     </application>
 </manifest>

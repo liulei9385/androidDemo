@@ -4,4 +4,6 @@
     <color name="black">#000000</color>
     <color name="gray">#aaaaaa</color>
     <color name="light_blue">#6593cb</color>
+
+    <color name="toolbar_yellow">#ffffa51c</color>
 </resources>

@@ -8,7 +8,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 public class DrawerLayoutActivity extends ActionBarActivity {
 
+    private Toolbar toolbar;
     private ListView listView;
     private DrawerLayout drawerLayout;
     private List<String> urlItems;
@@ -51,15 +54,18 @@ public class DrawerLayoutActivity extends ActionBarActivity {
 
     private void initView() {
 
+        toolbar = (Toolbar) this.findViewById(R.id.toolbar);
         listView = (ListView) this.findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        //actionBar.setHomeButtonEnabled(true);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.drawable.ic_launcher);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(mDrawerToggle);
 
         //设置adapter
@@ -145,5 +151,19 @@ public class DrawerLayoutActivity extends ActionBarActivity {
         super.onPostCreate(savedInstanceState);
         if (mDrawerToggle != null)
             mDrawerToggle.syncState();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if (drawerLayout != null && listView != null) {
+                if (!drawerLayout.isDrawerOpen(listView))
+                    drawerLayout.openDrawer(listView);
+                else drawerLayout.closeDrawer(listView);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+
     }
 }
