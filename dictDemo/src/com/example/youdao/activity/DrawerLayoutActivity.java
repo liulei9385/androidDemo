@@ -62,7 +62,10 @@ public class DrawerLayoutActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayUseLogoEnabled(true);
         //actionBar.setHomeButtonEnabled(true);
+
+        actionBar.setLogo(R.drawable.ic_launcher);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.drawable.ic_launcher);
         mDrawerToggle.setDrawerIndicatorEnabled(true);

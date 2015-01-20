@@ -35,7 +35,8 @@ public class MainActivity extends ActionBarActivity {
         mWebView.loadUrl(httpUrl);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayUseLogoEnabled(false);
         actionBar.setIcon(R.drawable.ic_launcher);
     }
 

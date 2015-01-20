@@ -3,12 +3,6 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="actionBarStyle">@style/ActionBarStyle</item>
         <item name="actionBarSize">48dp</item>
-        <item name="actionButtonStyle">@style/ActionButtonStyle</item>
-    </style>
-    <!--ActionButtonStyle-->
-    <style name="ActionButtonStyle" parent="@style/Widget.AppCompat.Light.ActionButton">
-        <item name="android:minWidth">36dp</item>
-        <item name="android:minHeight">36dp</item>
     </style>
 
     <!--ActionBarStyle-->
