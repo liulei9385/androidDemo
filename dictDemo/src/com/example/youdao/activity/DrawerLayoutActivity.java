@@ -119,9 +119,11 @@ public class DrawerLayoutActivity extends ActionBarActivity {
             return true;
         }
 
+
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.title:
+                System.out.println("DrawerLayoutActivity.onOptionsItemSelected##");
                 if (drawerLayout.isDrawerOpen(Gravity.START))
                     mDrawerToggle.onDrawerClosed(listView);
                 else mDrawerToggle.onDrawerClosed(listView);
