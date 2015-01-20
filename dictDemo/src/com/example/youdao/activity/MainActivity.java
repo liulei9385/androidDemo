@@ -1,9 +1,15 @@
 package com.example.youdao.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.internal.view.SupportMenuItem;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -11,7 +17,7 @@ import android.webkit.WebViewClient;
 import com.example.youdao.R;
 import com.example.youdao.pulltorefresh.PullToRefreshLayout;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private WebView mWebView;
     private String httpUrl;
@@ -27,6 +33,10 @@ public class MainActivity extends Activity {
         initView();
         httpUrl = "http://dict.youdao.com";
         mWebView.loadUrl(httpUrl);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setIcon(R.drawable.ic_launcher);
     }
 
     private PullToRefreshLayout.OnRefreshListener refreshListener = new PullToRefreshLayout.OnRefreshListener() {
@@ -92,5 +102,23 @@ public class MainActivity extends Activity {
 
     public String getHttpUrl() {
         return httpUrl;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SupportMenuItem menuItem = (SupportMenuItem) menu.add(0, 1, 1, "draw");
+        menuItem.setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case 1:
+                startActivity(new Intent(MainActivity.this, DrawerLayoutActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
