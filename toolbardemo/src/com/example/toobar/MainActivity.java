@@ -64,7 +64,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SupportMenuItem menuItem = (SupportMenuItem) menu.add(0, 1, 1, "settings");
+        SupportMenuItem menuItem2 = (SupportMenuItem) menu.add(0, 2, 2, "other");
         menuItem.setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        menuItem2.setShowAsAction(MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -79,6 +81,9 @@ public class MainActivity extends ActionBarActivity {
                 Intent intent = new Intent(Settings.ACTION_SETTINGS);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                break;
+            case 2:
+                startActivity(new Intent(MainActivity.this, ShareContentActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
