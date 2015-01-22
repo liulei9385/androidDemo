@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hello World, MainActivity" />
-
     <Button
         android:id="@+id/button1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button1" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_shape"
+        android:text="@string/button1"
+        android:textColor="@color/Yellow" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button2" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/button_shape"
+        android:text="@string/button2"
+        android:textColor="@color/Yellow" />
 
     <ImageView
         android:id="@+id/imgView1"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside" />
+        android:scaleType="centerInside"
+        tools:ignore="ContentDescription" />
 
 </LinearLayout>

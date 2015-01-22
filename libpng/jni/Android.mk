@@ -9,6 +9,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := test
 LOCAL_SHARED_LIBRARIES := png
 LOCAL_SRC_FILES := \
-	test.c
+	pngtest.c
 LOCAL_LDLIBS := -lz -llog
 include $(BUILD_SHARED_LIBRARY)
