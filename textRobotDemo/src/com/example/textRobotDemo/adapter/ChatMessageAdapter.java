@@ -61,14 +61,14 @@ public class ChatMessageAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             if (chatMessage.getType() == ChatMessage.Type.INPUT) {
-                convertView = mInflater.inflate(R.layout.chatlist_item_incoming, parent, false);
+                convertView = mInflater.inflate(R.layout.chatlist_item_outgoing, parent, false);
                 viewHolder.createDate = (TextView) convertView
                         .findViewById(R.id.chat_from_createDate);
                 viewHolder.content = (TextView) convertView
                         .findViewById(R.id.chat_from_content);
                 convertView.setTag(viewHolder);
             } else {
-                convertView = mInflater.inflate(R.layout.chatlist_item_outgoing, parent, false);
+                convertView = mInflater.inflate(R.layout.chatlist_item_incoming, parent, false);
                 viewHolder.createDate = (TextView) convertView.findViewById(R.id.chat_from_createDate);
                 viewHolder.content = (TextView) convertView.findViewById(R.id.chat_from_content);
                 convertView.setTag(viewHolder);

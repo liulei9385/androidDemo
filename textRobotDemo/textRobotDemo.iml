@@ -16,5 +16,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="robotdemo_libs" level="project" />
+    <orderEntry type="module" module-name="android-support-v7-appcompat" exported="" />
   </component>
 </module>
