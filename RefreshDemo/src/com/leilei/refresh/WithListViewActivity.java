@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.view.View;
+import android.widget.*;
+import com.leilei.refresh.view.IPullable;
 import com.leilei.refresh.view.PulltoRefreshListView;
 import com.leilei.refresh.view.RefreshLayout;
 
@@ -42,6 +43,17 @@ public class WithListViewActivity extends Activity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1
                 , android.R.id.text1, strings);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object o = parent.getItemAtPosition(position);
+                String text = "NULL";
+                if (o != null) {
+                    text = (String) o;
+                }
+                Toast.makeText(WithListViewActivity.this, text, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         refreshLayout.setRefreshListener(new RefreshLayout.OnRefreshListener() {
             @SuppressWarnings("unchecked")
@@ -54,7 +66,7 @@ public class WithListViewActivity extends Activity {
                 } else
                     ((ArrayAdapter<String>) adapter).addAll(prepareArrayData());
                 ((ArrayAdapter<String>) adapter).notifyDataSetChanged();
-                hideView(true,2 * 1000);
+                hideView(true, 2 * 1000);
             }
 
             @SuppressWarnings("unchecked")

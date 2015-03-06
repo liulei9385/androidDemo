@@ -88,6 +88,15 @@ public class MainActivity extends Activity {
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
+
+        Button button3 = (Button) this.findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, WithGridViewActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            }
+        });
     }
 
     @SuppressLint("SetJavaScriptEnabled")

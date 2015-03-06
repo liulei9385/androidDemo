@@ -13,8 +13,10 @@
 
         <ProgressBar android:id="@+id/footProgressBar"
                      android:visibility="gone"
+                     android:indeterminate="false"
                      android:layout_width="25dp"
                      android:layout_height="25dp"/>
 
     </LinearLayout>
+
 </RelativeLayout>

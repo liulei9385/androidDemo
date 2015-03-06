@@ -7,18 +7,16 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.view.animation.*;
+import android.widget.*;
 import com.leilei.refresh.R;
+
+import java.sql.Ref;
 
 /**
  * USER: liulei
@@ -66,6 +64,9 @@ public class RefreshLayout extends RelativeLayout {
     private void initView() {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
+        maxMoveY = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                120, getResources().getDisplayMetrics());
+
         headView = layoutInflater.inflate(R.layout.layout_pullrefresh, null);
         arrowView = (ImageView) headView.findViewById(R.id.arrow);
         refreshView = (TextView) headView.findViewById(R.id.refresh_text);
@@ -79,6 +80,28 @@ public class RefreshLayout extends RelativeLayout {
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         footView.setLayoutParams(layoutParams);
         addView(footView, 2);
+
+        //屏蔽单击事件.防止点到contentView的单击事件
+        headView.setClickable(true);
+        footView.setClickable(true);
+
+        if (contentView instanceof AbsListView) {
+            final AbsListView listView = (AbsListView) contentView;
+            listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_FLING) {
+                        if (((IPullable) contentView).isBottom()) {
+                            autoBottomRefresh();
+                        }
+                    }
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                }
+            });
+        }
     }
 
     private boolean isPullDown = false;
@@ -89,13 +112,14 @@ public class RefreshLayout extends RelativeLayout {
         int action = MotionEventCompat.getActionMasked(ev);
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                state = DONE;
-                isTouch = true;
+                //state = DONE;
                 lastY = ev.getY();
                 moveY = 0;
                 canPullDown = canPullUp = false;
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (state == REFRESHING)
+                    lastY = ev.getY();
                 moveY = (ev.getY() - lastY) * ratio;
                 //下拉
                 if (contentView instanceof IPullable) {
@@ -130,9 +154,9 @@ public class RefreshLayout extends RelativeLayout {
                         isFooterRefreshing = true;
                     state = REFRESHING;
                     updateProgressbar();
-                    if (refreshListener != null && canPullDown)
+                    if (refreshListener != null && isHeadRefreshing && canPullDown)
                         refreshListener.onRefresh();
-                    if (refreshListener != null && canPullUp)
+                    if (refreshListener != null && isFooterRefreshing && canPullUp)
                         refreshListener.onLoadMore();
                     requestLayout();
                 }
@@ -164,9 +188,13 @@ public class RefreshLayout extends RelativeLayout {
     }
 
 
+    private boolean isAutorRefresh = false;
+
     private void updateLayout(int state) {
-        canPullDown = moveY >= 0 && canPullDown;
-        canPullUp = moveY < 0 && canPullUp;
+        if (!isAutorRefresh) {
+            canPullDown = moveY >= 0 && canPullDown;
+            canPullUp = moveY < 0 && canPullUp;
+        }
 
         switch (state) {
             case PULL_TO_REFRESH:
@@ -252,10 +280,16 @@ public class RefreshLayout extends RelativeLayout {
             firstLayout = false;
             headView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             headViewHeight = headView.getMeasuredHeight();
+
+            if (contentView instanceof IPullable) {
+                canPullDown = ((IPullable) contentView).isTop();
+                canPullUp = ((IPullable) contentView).isBottom();
+            }
         }
         updateLayout(state);
     }
 
+    /*旋转动画*/
     private Animation createRotateAnimation() {
         RotateAnimation animation = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF,
                 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -265,16 +299,75 @@ public class RefreshLayout extends RelativeLayout {
         return animation;
     }
 
+    /*平移动画*/
+    private Animation createTranslateAnimation() {
+        if (contentView != null) {
+            TranslateAnimation translateAnimation = new TranslateAnimation(0, 0,
+                    contentView.getMeasuredHeight(), 0);
+            translateAnimation.setInterpolator(new LinearInterpolator());
+            translateAnimation.setFillAfter(true);
+            translateAnimation.setDuration(200);
+            return translateAnimation;
+        }
+        return null;
+    }
+
+    /*缩放动画*/
+    private Animation createScaleAnimation() {
+        /*敢于思考，总有解决办法的额*/
+        ScaleAnimation animation = new ScaleAnimation(1.0f, 1.0f, 0.0f, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.0f);
+        animation.setDuration(200);
+        animation.setFillAfter(true);
+        animation.setInterpolator(new LinearInterpolator());
+        return animation;
+    }
+
     public void refreshComplete() {
         state = DONE;
-        isHeadRefreshing = false;
+        isHeadRefreshing = isAutorRefresh = false;
         requestLayout();
     }
 
     public void onLoadMoreComplete() {
         state = DONE;
-        isFooterRefreshing = false;
+        isFooterRefreshing = isAutorRefresh = false;
         requestLayout();
+    }
+
+    /*自动下拉*/
+    public void autoTopRefresh() {
+        if (!isHeadRefreshing && !isFooterRefreshing) {
+            isHeadRefreshing = true;
+            isFooterRefreshing = false;
+            isAutorRefresh = true;
+            canPullDown = true;
+            state = REFRESHING;
+            headView.startAnimation(createScaleAnimation());
+            updateProgressbar();
+            if (refreshListener != null && canPullDown)
+                refreshListener.onRefresh();
+            requestLayout();
+        }
+    }
+
+    /*自动上拉*/
+    public void autoBottomRefresh() {
+        if (!isHeadRefreshing && !isFooterRefreshing) {
+            System.out.println("RefreshLayout.autoBottomRefresh");
+            isHeadRefreshing = false;
+            isFooterRefreshing = true;
+            isAutorRefresh = true;
+            state = REFRESHING;
+            canPullUp = true;
+            Animation animation = createTranslateAnimation();
+            if (animation != null)
+                footView.startAnimation(animation);
+            updateProgressbar();
+            if (refreshListener != null && canPullUp)
+                refreshListener.onLoadMore();
+            requestLayout();
+        }
     }
 
     private Handler handler = new Handler() {

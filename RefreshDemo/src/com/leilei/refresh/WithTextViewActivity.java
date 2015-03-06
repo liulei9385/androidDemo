@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.TextView;
 import com.leilei.refresh.view.RefreshLayout;
 
@@ -20,6 +24,8 @@ public class WithTextViewActivity extends Activity {
     private TextView contentText;
 
     private Handler handler = new Handler();
+
+    private int instance = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +48,32 @@ public class WithTextViewActivity extends Activity {
                 hideView(false, 2 * 1000);
             }
         });
+
+        final Button button1 = (Button) findViewById(R.id.button1);
+        Button button2 = (Button) findViewById(R.id.button2);
+        Button button3 = (Button) findViewById(R.id.button3);
+
+        button1.setOnClickListener(clickListener);
+        button2.setOnClickListener(clickListener);
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Random random = new Random();
+                toX = random.nextInt(250);
+                toY = random.nextInt(250);
+                TranslateAnimation animation = new TranslateAnimation(fromX, toX, fromY, toY);
+                fromX = toX;
+                fromY = toY;
+                animation.setDuration(200);
+                animation.setInterpolator(new LinearInterpolator());
+                animation.setFillAfter(true);
+                button1.startAnimation(animation);
+            }
+        });
     }
+
+    private int fromX, fromY, toX, toY;
 
     private void hideView(final boolean isTop, final long delays) {
         handler.postDelayed(new Runnable() {
@@ -64,5 +95,24 @@ public class WithTextViewActivity extends Activity {
     private int createRamdonColor() {
         Random random = new Random();
         return Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+    }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.button1:
+                    refreshLayout.autoTopRefresh();
+                    break;
+                case R.id.button2:
+                    refreshLayout.autoBottomRefresh();
+                    break;
+            }
+        }
+    };
+
+    private void processClickEvent() {
+
     }
 }

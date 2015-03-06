@@ -21,5 +21,6 @@
 
         <activity android:name=".WithTextViewActivity"/>
         <activity android:name=".WithListViewActivity"/>
+        <activity android:name=".WithGridViewActivity"/>
     </application>
 </manifest>
