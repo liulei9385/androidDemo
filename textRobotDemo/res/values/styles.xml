@@ -8,6 +8,7 @@
         <item name="android:fadingEdge">none</item>
         <item name="android:fadingEdgeLength">0dp</item>
         <item name="android:overScrollMode">never</item>
+        <item name="windowActionBar">false</item>
     </style>
 
 </resources>

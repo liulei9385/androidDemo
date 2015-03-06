@@ -6,6 +6,32 @@
                 android:orientation="vertical"
                 tools:ignore="RtlHardcoded">
 
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:id="@+id/linear_container"
+                  android:orientation="vertical"
+                  android:layout_above="@+id/ly_chat_bottom">
+
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <ListView
+                android:id="@+id/id_chat_listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:cacheColorHint="#0000"
+                android:divider="@null"
+                android:dividerHeight="5dp"
+                android:scrollbarStyle="outsideOverlay">
+        </ListView>
+
+    </LinearLayout>
+
+
     <RelativeLayout
             android:id="@+id/ly_chat_bottom"
             android:layout_width="fill_parent"
@@ -21,8 +47,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:background="#ff1516ff"
-                android:text="@string/sendmessage"
-                android:onClick="sendMessage"/>
+                android:text="@string/sendmessage"/>
 
         <EditText
                 android:id="@+id/id_chat_msg"
@@ -37,16 +62,5 @@
                 android:textColor="#ff000000"
                 android:textSize="18sp"/>
     </RelativeLayout>
-
-    <ListView
-            android:id="@+id/id_chat_listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/ly_chat_bottom"
-            android:cacheColorHint="#0000"
-            android:divider="@null"
-            android:dividerHeight="5dp"
-            android:scrollbarStyle="outsideOverlay">
-    </ListView>
 
 </RelativeLayout>

@@ -67,7 +67,7 @@ public class DrawerLayoutActivity extends ActionBarActivity {
 
         actionBar.setLogo(R.drawable.ic_launcher);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.drawable.ic_launcher);
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,toolbar, R.drawable.ic_drawer, R.drawable.ic_launcher);
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(mDrawerToggle);
 
