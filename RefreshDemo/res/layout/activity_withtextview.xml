@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <com.leilei.refresh.view.RefreshLayout
+            android:id="@+id/refreshView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <com.leilei.refresh.view.PulltoRefreshTextView
+                android:id="@+id/contentView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="#ff0000"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:text="MATCH_PARENT TEXTVIEW"/>
+
+    </com.leilei.refresh.view.RefreshLayout>
+
+</RelativeLayout>
