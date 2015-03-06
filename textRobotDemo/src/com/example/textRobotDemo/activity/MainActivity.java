@@ -1,4 +1,4 @@
-package com.example.textRobotDemo;
+package com.example.textRobotDemo.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.example.textRobotDemo.R;
 import com.example.textRobotDemo.adapter.ChatMessageAdapter;
 import com.example.textRobotDemo.bean.ChatMessage;
 import com.example.textRobotDemo.utils.HttpUtils;
