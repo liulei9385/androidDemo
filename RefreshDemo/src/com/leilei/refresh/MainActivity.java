@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -13,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import com.leilei.refresh.view.RefreshLayout;
 
 import java.util.Random;
@@ -34,13 +36,13 @@ public class MainActivity extends Activity {
 
         final String[] httpUrls = new String[]
                 {
-                        "http://military.china.com/zh_cn",
+                        "http://sina.cn",
                         "http://www.baidu.com",
-                        "http://nba.hupu.com",
+                        "http://www.qiushibaike.com/",
                         "http://www.qq.com"
                 };
 
-        webView.loadUrl(httpUrls[2]);
+        webView.loadUrl(httpUrls[new Random().nextInt(httpUrls.length)]);
 
         refreshLayout = (RefreshLayout) this.findViewById(R.id.refreshView);
         refreshLayout.setRefreshListener(new RefreshLayout.OnRefreshListener() {
@@ -64,6 +66,7 @@ public class MainActivity extends Activity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        Toast.makeText(MainActivity.this, "LoadMore", Toast.LENGTH_SHORT).show();
                         refreshLayout.onLoadMoreComplete();
                     }
                 }, 1000);
@@ -119,7 +122,7 @@ public class MainActivity extends Activity {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
-            if (newProgress >= 45)
+            if (newProgress >= 20)
                 refreshLayout.refreshComplete();
         }
     }
