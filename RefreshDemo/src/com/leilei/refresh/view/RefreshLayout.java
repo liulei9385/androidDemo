@@ -12,11 +12,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.*;
-import android.widget.*;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
+import android.widget.AbsListView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.leilei.refresh.R;
-
-import java.sql.Ref;
 
 /**
  * USER: liulei
@@ -44,7 +50,6 @@ public class RefreshLayout extends RelativeLayout {
     private int headViewHeight = 0;
 
     private boolean firstLayout = true;
-    private boolean isTouch = false;
 
     private boolean canPullUp = false;
     private boolean canPullDown = false;
@@ -122,18 +127,28 @@ public class RefreshLayout extends RelativeLayout {
                     lastY = ev.getY();
                 moveY = (ev.getY() - lastY) * ratio;
                 //下拉
-                if (contentView instanceof IPullable) {
+                if (state != REFRESHING && contentView instanceof IPullable) {
                     canPullDown = ((IPullable) contentView).isTop();
                     canPullUp = ((IPullable) contentView).isBottom();
                 }
+
+                if (state != REFRESHING) {
+                    if (isPullDown && moveY >= -moveMinInstance) {
+                        state = DONE;
+                        requestLayout();
+                    }
+                    if (isPullUp && moveY <= moveMinInstance) {
+                        state = DONE;
+                        requestLayout();
+                    }
+                }
+
                 if (!isPullUp && moveY >= moveMinInstance && canPullDown && state != REFRESHING
                         && !isHeadRefreshing && !isFooterRefreshing) {
                     state = moveY < headViewHeight ? PULL_TO_REFRESH : RELEASE_TO_REFERSH;
                     ev.setAction(MotionEvent.ACTION_CANCEL);
                     requestLayout();
                     isPullDown = true;
-                    if (moveY > maxMoveY)
-                        moveY = maxMoveY;
                 }
 
                 //上拉
@@ -147,8 +162,9 @@ public class RefreshLayout extends RelativeLayout {
 
                 break;
             case MotionEvent.ACTION_UP:
+                System.out.println("RefreshLayout.dispatchTouchEvent" + state);
                 if (state == RELEASE_TO_REFERSH) {
-                    if (ev.getY() - lastY > 0)
+                    if (ev.getY() - lastY >= 0)
                         isHeadRefreshing = true;
                     else if (ev.getY() - lastY < 0)
                         isFooterRefreshing = true;
@@ -158,13 +174,12 @@ public class RefreshLayout extends RelativeLayout {
                         refreshListener.onRefresh();
                     if (refreshListener != null && isFooterRefreshing && canPullUp)
                         refreshListener.onLoadMore();
-                    requestLayout();
                 }
                 if (state == PULL_TO_REFRESH) {
                     state = DONE;
-                    requestLayout();
                 }
-                isTouch = false;
+                requestLayout();
+                isPullDown = isPullUp = false;
                 break;
         }
         // 事件分发交给父类
@@ -198,7 +213,10 @@ public class RefreshLayout extends RelativeLayout {
 
         switch (state) {
             case PULL_TO_REFRESH:
-                if (canPullDown && !isFooterRefreshing) {
+                if (isPullUp && isPullDown)
+                    return;
+                if (!isPullUp && canPullDown && !isFooterRefreshing) {
+                    isPullDown = true;
                     hideFootView();
                     //恢复原先的状态
                     if (arrowView.getAnimation() != null)
@@ -207,39 +225,68 @@ public class RefreshLayout extends RelativeLayout {
                     headView.layout(0, 0, headView.getMeasuredWidth(), (int) moveY);
                     if (moveY <= moveMinInstance)
                         handler.sendEmptyMessage(0);
+                    if (isContentMoved()) {
+                        contentView.layout(0, (int) moveY, contentView.getMeasuredWidth()
+                                , (int) moveY + contentView.getMeasuredHeight());
+                    }
                 }
-                if (canPullUp && !isHeadRefreshing) {
+                if (!isPullDown && canPullUp && !isHeadRefreshing) {
+                    isPullUp = true;
                     hideHeadView();
                     footView.layout(0, (int) (contentView.getMeasuredHeight() + moveY), footView.getMeasuredWidth(),
                             contentView.getMeasuredHeight());
-                    if (moveY > -moveMinInstance)
+                    if (moveY >= -moveMinInstance)
                         handler.sendEmptyMessage(0);
+                    if (isContentMoved()) {
+                        contentView.layout(0, (int) moveY, contentView.getMeasuredWidth()
+                                , (int) moveY + contentView.getMeasuredHeight());
+                    }
                 }
                 break;
             case RELEASE_TO_REFERSH:
-                if (canPullDown && !isFooterRefreshing) {
+                if (isPullUp && isPullDown)
+                    return;
+                if (!isPullUp && canPullDown && !isFooterRefreshing) {
+                    isPullDown = true;
                     hideFootView();
                     refreshView.setText(getContext().getString(R.string.release_to_refresh_text));
                     if (arrowView.getAnimation() == null || !arrowView.getAnimation().hasStarted())
                         arrowView.startAnimation(createRotateAnimation());
                     headView.layout(0, 0, headView.getMeasuredWidth(), maxMoveY);
+                    if (isContentMoved()) {
+                        contentView.layout(0, maxMoveY, contentView.getMeasuredWidth()
+                                , maxMoveY + contentView.getMeasuredHeight());
+                    }
                 }
-                if (canPullUp && !isHeadRefreshing) {
+                if (!isPullDown && canPullUp && !isHeadRefreshing) {
+                    isPullUp = true;
                     hideHeadView();
                     footView.layout(0, contentView.getMeasuredHeight() - maxMoveY, footView.getMeasuredWidth(),
                             contentView.getMeasuredHeight());
+                    if (isContentMoved()) {
+                        contentView.layout(0, -maxMoveY, contentView.getMeasuredWidth()
+                                , -maxMoveY + contentView.getMeasuredHeight());
+                    }
                 }
                 break;
             case REFRESHING:
-                if (canPullDown && !isFooterRefreshing) {
+                if ((canPullDown && !isFooterRefreshing && !isPullUp) || isHeadRefreshing) {
                     hideFootView();
                     refreshView.setText(getContext().getString(R.string.refreshing));
                     headView.layout(0, 0, headView.getMeasuredWidth(), headView.getMeasuredHeight());
+                    if (isContentMoved()) {
+                        contentView.layout(0, headViewHeight, contentView.getMeasuredWidth()
+                                , headViewHeight + contentView.getMeasuredHeight());
+                    }
                 }
-                if (canPullUp && !isHeadRefreshing) {
+                if ((canPullUp && !isHeadRefreshing && !isPullDown) || isFooterRefreshing) {
                     hideHeadView();
                     footView.layout(0, contentView.getMeasuredHeight() - footView.getMeasuredHeight(),
                             footView.getMeasuredWidth(), contentView.getMeasuredHeight());
+                    if (isContentMoved()) {
+                        contentView.layout(0, -footView.getMeasuredHeight(), contentView.getMeasuredWidth()
+                                , -footView.getMeasuredHeight() + contentView.getMeasuredHeight());
+                    }
                 }
                 break;
             case INIT:
@@ -256,7 +303,10 @@ public class RefreshLayout extends RelativeLayout {
                 headView.layout(0, 0, 0, 0);
                 arrowView.clearAnimation();
                 footView.layout(0, 0, 0, 0);
-                isPullDown = isPullUp = false;
+                if (isContentMoved())
+                    contentView.layout(0, 0, contentView.getMeasuredWidth()
+                            , contentView.getMeasuredHeight());
+                //isPullDown = isPullUp = false;
                 break;
         }
     }
@@ -354,7 +404,6 @@ public class RefreshLayout extends RelativeLayout {
     /*自动上拉*/
     public void autoBottomRefresh() {
         if (!isHeadRefreshing && !isFooterRefreshing) {
-            System.out.println("RefreshLayout.autoBottomRefresh");
             isHeadRefreshing = false;
             isFooterRefreshing = true;
             isAutorRefresh = true;
@@ -391,13 +440,35 @@ public class RefreshLayout extends RelativeLayout {
 
     private OnRefreshListener refreshListener;
 
-    public void setRefreshListener(OnRefreshListener refreshListener) {
-        this.refreshListener = refreshListener;
-    }
-
     public interface OnRefreshListener {
         public void onRefresh();
 
         public void onLoadMore();
+    }
+
+    public void setRefreshListener(OnRefreshListener refreshListener) {
+        this.refreshListener = refreshListener;
+    }
+
+    /**
+     * 设置滑动系数
+     *
+     * @param newRatio 比例
+     */
+    public void setMoveRatio(float newRatio) {
+        if (newRatio <= 0)
+            throw new IllegalArgumentException("ration must be larger than zero.");
+        this.ratio = newRatio;
+    }
+
+    private boolean isContentMoved = false;
+
+    /*设置主view是否移动*/
+    public void setContentMoved(boolean isContentMoved) {
+        this.isContentMoved = isContentMoved;
+    }
+
+    public boolean isContentMoved() {
+        return isContentMoved;
     }
 }

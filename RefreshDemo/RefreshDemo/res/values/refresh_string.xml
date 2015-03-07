@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="release_to_refresh_text">释放以刷新</string>
-    <string name="pull_to_refesh">下拉刷新</string>
-    <string name="refreshing">正在刷新</string>
-</resources>

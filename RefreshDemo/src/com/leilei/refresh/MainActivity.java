@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -71,7 +72,8 @@ public class MainActivity extends Activity {
 
         Button button = new Button(this);
         button.setText("hello");
-        addContentView(button, new LinearLayout.LayoutParams(150, 80));
+        addContentView(button, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,4 +130,5 @@ public class MainActivity extends Activity {
             return super.shouldOverrideUrlLoading(view, url);
         }
     }
+
 }

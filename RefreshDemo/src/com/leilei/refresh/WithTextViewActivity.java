@@ -25,8 +25,6 @@ public class WithTextViewActivity extends Activity {
 
     private Handler handler = new Handler();
 
-    private int instance = 200;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +33,7 @@ public class WithTextViewActivity extends Activity {
         contentText = (TextView) this.findViewById(R.id.contentView);
 
         refreshLayout = (RefreshLayout) this.findViewById(R.id.refreshView);
+        refreshLayout.setContentMoved(true);
         refreshLayout.setRefreshListener(new RefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
