@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.leilei.refresh.R;
 
 /**
+ * 下拉刷新上拉加载 参照 {@see https://github.com/jingchenUSTC/PullToRefreshAndLoad}
  * USER: liulei
  * DATA: 2015/2/12
  * TIME: 16:13
