@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:ignore="RtlHardcoded"
-                android:background="#ff1516ff">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              tools:ignore="RtlHardcoded,UselessParent"
+              android:background="#ffffff">
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:paddingBottom="20dp"
-                    android:paddingTop="20dp"
-                    tools:ignore="UselessParent">
+                    android:layout_gravity="left|bottom">
 
-        <RelativeLayout android:layout_width="wrap_content"
+        <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true">
+                        android:paddingTop="20dp"
+                        android:paddingBottom="20dp"
+                        android:gravity="center">
 
             <ProgressBar
                     android:visibility="visible"
                     android:id="@+id/progressBar"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:indeterminateDrawable="@drawable/custom_progress"
+                    android:indeterminateDuration="800"/>
 
             <ImageView android:id="@+id/arrow"
                        android:layout_toRightOf="@+id/progressBar"
@@ -45,4 +46,4 @@
 
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

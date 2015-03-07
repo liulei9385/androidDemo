@@ -2,6 +2,7 @@ package com.leilei.refresh.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -49,6 +50,7 @@ public class RefreshLayout extends RelativeLayout {
     private int moveMinInstance = 8;
 
     private int headViewHeight = 0;
+    private int footViewHeight = 0;
 
     private boolean firstLayout = true;
 
@@ -150,20 +152,21 @@ public class RefreshLayout extends RelativeLayout {
                     ev.setAction(MotionEvent.ACTION_CANCEL);
                     requestLayout();
                     isPullDown = true;
+                    if (moveY > maxMoveY) moveY = maxMoveY;
                 }
 
                 //上拉
                 if (!isPullDown && moveY < -moveMinInstance && canPullUp && state != REFRESHING
                         && !isFooterRefreshing && !isHeadRefreshing) {
-                    state = moveY >= -maxMoveY ? PULL_TO_REFRESH : RELEASE_TO_REFERSH;
+                    state = moveY >= -footViewHeight ? PULL_TO_REFRESH : RELEASE_TO_REFERSH;
                     ev.setAction(MotionEvent.ACTION_CANCEL);
                     requestLayout();
                     isPullUp = true;
+                    if (moveY <= -maxMoveY) moveY = -maxMoveY;
                 }
 
                 break;
             case MotionEvent.ACTION_UP:
-                System.out.println("RefreshLayout.dispatchTouchEvent" + state);
                 if (state == RELEASE_TO_REFERSH) {
                     if (ev.getY() - lastY >= 0)
                         isHeadRefreshing = true;
@@ -253,20 +256,20 @@ public class RefreshLayout extends RelativeLayout {
                     refreshView.setText(getContext().getString(R.string.release_to_refresh_text));
                     if (arrowView.getAnimation() == null || !arrowView.getAnimation().hasStarted())
                         arrowView.startAnimation(createRotateAnimation());
-                    headView.layout(0, 0, headView.getMeasuredWidth(), maxMoveY);
+                    headView.layout(0, 0, headView.getMeasuredWidth(), (int) moveY);
                     if (isContentMoved()) {
-                        contentView.layout(0, maxMoveY, contentView.getMeasuredWidth()
-                                , maxMoveY + contentView.getMeasuredHeight());
+                        contentView.layout(0, (int) moveY, contentView.getMeasuredWidth()
+                                , (int) moveY + contentView.getMeasuredHeight());
                     }
                 }
                 if (!isPullDown && canPullUp && !isHeadRefreshing) {
                     isPullUp = true;
                     hideHeadView();
-                    footView.layout(0, contentView.getMeasuredHeight() - maxMoveY, footView.getMeasuredWidth(),
+                    footView.layout(0, (int) (contentView.getMeasuredHeight() + moveY), footView.getMeasuredWidth(),
                             contentView.getMeasuredHeight());
                     if (isContentMoved()) {
-                        contentView.layout(0, -maxMoveY, contentView.getMeasuredWidth()
-                                , -maxMoveY + contentView.getMeasuredHeight());
+                        contentView.layout(0, (int) moveY, contentView.getMeasuredWidth()
+                                , (int) moveY + contentView.getMeasuredHeight());
                     }
                 }
                 break;
@@ -330,7 +333,9 @@ public class RefreshLayout extends RelativeLayout {
             initView();
             firstLayout = false;
             headView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            footView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             headViewHeight = headView.getMeasuredHeight();
+            footViewHeight = footView.getMeasuredHeight();
 
             if (contentView instanceof IPullable) {
                 canPullDown = ((IPullable) contentView).isTop();
@@ -472,4 +477,5 @@ public class RefreshLayout extends RelativeLayout {
     public boolean isContentMoved() {
         return isContentMoved;
     }
+
 }
