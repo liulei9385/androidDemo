@@ -22,5 +22,6 @@
         <activity android:name=".WithTextViewActivity"/>
         <activity android:name=".WithListViewActivity"/>
         <activity android:name=".WithGridViewActivity"/>
+        <activity android:name=".SWipeRefreshLayoutActivity"/>
     </application>
 </manifest>

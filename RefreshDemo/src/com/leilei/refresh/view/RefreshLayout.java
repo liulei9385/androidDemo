@@ -2,7 +2,6 @@ package com.leilei.refresh.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.RotateDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -62,6 +61,9 @@ public class RefreshLayout extends RelativeLayout {
     private boolean isFooterRefreshing = false;
 
     private boolean isRotateRecover = false;
+
+    private int headViewBgColor;
+    private int footViewBgColor;
 
     public RefreshLayout(Context context) {
         this(context, null);
@@ -229,7 +231,7 @@ public class RefreshLayout extends RelativeLayout {
                     isPullDown = true;
                     hideFootView();
                     //恢复原先的状态
-                    if (!isRotateRecover) {
+                    if (!isRotateRecover && arrowView.getAnimation() != null) {
                         //避免多次刷新
                         isRotateRecover = true;
                         arrowView.startAnimation(createRotateAnimation(180, 360));
@@ -352,6 +354,11 @@ public class RefreshLayout extends RelativeLayout {
                 canPullDown = ((IPullable) contentView).isTop();
                 canPullUp = ((IPullable) contentView).isBottom();
             }
+            //为了在布局初始化的时候还能设置颜色
+            if (this.headViewBgColor != 0)
+                headView.setBackgroundColor(headViewBgColor);
+            if (this.footViewBgColor != 0)
+                footView.setBackgroundColor(footViewBgColor);
         }
         updateLayout(state);
     }
@@ -477,6 +484,32 @@ public class RefreshLayout extends RelativeLayout {
         if (newRatio <= 0)
             throw new IllegalArgumentException("ration must be larger than zero.");
         this.ratio = newRatio;
+    }
+
+    public void setHeadBackGroundColor(final int color) {
+        this.headViewBgColor = color;
+        if (headView != null) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("RefreshLayout.run" + "11");
+                    headView.setBackgroundColor(color);
+                }
+            }, 25);
+        }
+    }
+
+    public void setBottomBackGroundColor(final int color) {
+        this.footViewBgColor = color;
+        if (footView != null) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("RefreshLayout.run" + "22");
+                    footView.setBackgroundColor(color);
+                }
+            }, 25);
+        }
     }
 
     private boolean isContentMoved = false;

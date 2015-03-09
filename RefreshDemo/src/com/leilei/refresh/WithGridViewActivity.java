@@ -1,15 +1,23 @@
 package com.leilei.refresh;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 import com.leilei.refresh.view.PulltoRefreshGridView;
 import com.leilei.refresh.view.RefreshLayout;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * USER: liulei
@@ -22,6 +30,8 @@ public class WithGridViewActivity extends Activity {
     private PulltoRefreshGridView gridView;
     private ArrayAdapter<String> adapter;
 
+    private CheckBox isContendMoveCheck;
+
     private int index;
 
     @Override
@@ -33,7 +43,18 @@ public class WithGridViewActivity extends Activity {
         List<String> stringList = createListData();
         index = stringList.size();
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1
-                , android.R.id.text1, stringList);
+                , android.R.id.text1, stringList) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                Random random = new Random();
+                textView.setTextColor(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+                textView.setTextSize(12 + random.nextInt(10));
+                return view;
+            }
+        };
         gridView.setAdapter(adapter);
 
         refreshLayout = (RefreshLayout) this.findViewById(R.id.refreshView);
@@ -56,6 +77,16 @@ public class WithGridViewActivity extends Activity {
                 for (int i = 0; i < 5; i++) {
                     adapter.add("Item" + index++);
                 }
+            }
+        });
+
+        isContendMoveCheck = (CheckBox) this.findViewById(R.id.checkBox);
+        boolean chekched = isContendMoveCheck.isChecked();
+        refreshLayout.setContentMoved(chekched);
+        isContendMoveCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                refreshLayout.setContentMoved(isChecked);
             }
         });
     }

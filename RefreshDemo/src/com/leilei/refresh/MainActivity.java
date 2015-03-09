@@ -15,7 +15,6 @@ import java.util.List;
 public class MainActivity extends FragmentActivity {
 
     private DrawerLayout drawerLayout;
-    private View drawerLeftLayout;
 
     private ListView listView;
     private ArrayAdapter<String> adapter;
@@ -28,8 +27,8 @@ public class MainActivity extends FragmentActivity {
 
         drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        drawerLeftLayout = this.findViewById(R.id.left_drawer);
-        listView = (ListView) drawerLayout.findViewById(R.id.left_drawer_list);
+        View drawerLeftLayout = this.findViewById(R.id.left_drawer);
+        listView = (ListView) drawerLeftLayout.findViewById(R.id.left_drawer_list);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -44,7 +43,7 @@ public class MainActivity extends FragmentActivity {
         textString.add("http://tv.sohu.com/");
         textString.add("http://www.letv.com/");
         textString.add("http://www.youku.com/");
-        adapter = new ArrayAdapter<String>(this, R.layout.simple_list_text, R.id.text1, textString);
+        adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.simple_list_text, R.id.text1, textString);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
