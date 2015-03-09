@@ -263,7 +263,7 @@ public class RefreshLayout extends RelativeLayout {
                     isPullDown = true;
                     hideFootView();
                     refreshView.setText(getContext().getString(R.string.release_to_refresh_text));
-                    if (arrowView.getAnimation() == null || !arrowView.getAnimation().hasStarted()) {
+                    if (arrowView.getAnimation() == null || !arrowView.getAnimation().hasStarted() || isRotateRecover) {
                         isRotateRecover = false;
                         arrowView.startAnimation(createRotateAnimation(0, 180));
                     }
