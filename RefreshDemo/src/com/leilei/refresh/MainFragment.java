@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.leilei.refresh.view.RefreshLayout;
 
@@ -29,6 +29,8 @@ public class MainFragment extends Fragment {
     private WebView webView;
     private RefreshLayout refreshLayout;
 
+    private ProgressBar progressBar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -38,6 +40,7 @@ public class MainFragment extends Fragment {
 
     private void initView(View rootView) {
         webView = (WebView) rootView.findViewById(R.id.webView);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         configWebview(webView);
 
         final String[] httpUrls = new String[]
@@ -51,6 +54,7 @@ public class MainFragment extends Fragment {
         webView.loadUrl(httpUrls[new Random().nextInt(httpUrls.length)]);
 
         refreshLayout = (RefreshLayout) rootView.findViewById(R.id.refreshView);
+        refreshLayout.setContentMoved(true);
         refreshLayout.setRefreshListener(new RefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -125,8 +129,9 @@ public class MainFragment extends Fragment {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
-            if (newProgress >= 20)
+            if (newProgress >= 85)
                 refreshLayout.refreshComplete();
+            updateProgressUI(newProgress <= 85);
         }
     }
 
@@ -135,5 +140,15 @@ public class MainFragment extends Fragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return super.shouldOverrideUrlLoading(view, url);
         }
+    }
+
+    public void loadUrl(String url) {
+        if (url.startsWith("http"))
+            this.webView.loadUrl(url);
+    }
+
+    private void updateProgressUI(boolean visizable) {
+        int visibility = visizable ? View.VISIBLE : View.GONE;
+        progressBar.setVisibility(visibility);
     }
 }

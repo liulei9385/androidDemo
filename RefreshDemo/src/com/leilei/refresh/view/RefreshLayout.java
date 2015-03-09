@@ -43,6 +43,7 @@ public class RefreshLayout extends RelativeLayout {
     private View contentView;
 
     private float lastY;
+    private float lastX;
     private float moveY;
 
     private float ratio = 0.78f;
@@ -59,6 +60,8 @@ public class RefreshLayout extends RelativeLayout {
 
     private boolean isHeadRefreshing = false;
     private boolean isFooterRefreshing = false;
+
+    private boolean isRotateRecover = false;
 
     public RefreshLayout(Context context) {
         this(context, null);
@@ -121,6 +124,7 @@ public class RefreshLayout extends RelativeLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 //state = DONE;
+                lastX = ev.getX();
                 lastY = ev.getY();
                 moveY = 0;
                 canPullDown = canPullUp = false;
@@ -146,7 +150,9 @@ public class RefreshLayout extends RelativeLayout {
                     }
                 }
 
-                if (!isPullUp && moveY >= moveMinInstance && canPullDown && state != REFRESHING
+                final boolean canProcessMove = (Math.abs(ev.getX() - lastX) < Math.abs(moveY));
+
+                if (!isPullUp && canProcessMove && moveY >= moveMinInstance && canPullDown && state != REFRESHING
                         && !isHeadRefreshing && !isFooterRefreshing) {
                     state = moveY < headViewHeight ? PULL_TO_REFRESH : RELEASE_TO_REFERSH;
                     ev.setAction(MotionEvent.ACTION_CANCEL);
@@ -156,7 +162,7 @@ public class RefreshLayout extends RelativeLayout {
                 }
 
                 //上拉
-                if (!isPullDown && moveY < -moveMinInstance && canPullUp && state != REFRESHING
+                if (!isPullDown && canProcessMove && moveY < -moveMinInstance && canPullUp && state != REFRESHING
                         && !isFooterRefreshing && !isHeadRefreshing) {
                     state = moveY >= -footViewHeight ? PULL_TO_REFRESH : RELEASE_TO_REFERSH;
                     ev.setAction(MotionEvent.ACTION_CANCEL);
@@ -223,8 +229,11 @@ public class RefreshLayout extends RelativeLayout {
                     isPullDown = true;
                     hideFootView();
                     //恢复原先的状态
-                    if (arrowView.getAnimation() != null)
-                        arrowView.clearAnimation();
+                    if (!isRotateRecover) {
+                        //避免多次刷新
+                        isRotateRecover = true;
+                        arrowView.startAnimation(createRotateAnimation(180, 360));
+                    }
                     refreshView.setText(getContext().getString(R.string.pull_to_refesh));
                     headView.layout(0, 0, headView.getMeasuredWidth(), (int) moveY);
                     if (moveY <= moveMinInstance)
@@ -254,8 +263,10 @@ public class RefreshLayout extends RelativeLayout {
                     isPullDown = true;
                     hideFootView();
                     refreshView.setText(getContext().getString(R.string.release_to_refresh_text));
-                    if (arrowView.getAnimation() == null || !arrowView.getAnimation().hasStarted())
-                        arrowView.startAnimation(createRotateAnimation());
+                    if (arrowView.getAnimation() == null || !arrowView.getAnimation().hasStarted()) {
+                        isRotateRecover = false;
+                        arrowView.startAnimation(createRotateAnimation(0, 180));
+                    }
                     headView.layout(0, 0, headView.getMeasuredWidth(), (int) moveY);
                     if (isContentMoved()) {
                         contentView.layout(0, (int) moveY, contentView.getMeasuredWidth()
@@ -346,8 +357,8 @@ public class RefreshLayout extends RelativeLayout {
     }
 
     /*旋转动画*/
-    private Animation createRotateAnimation() {
-        RotateAnimation animation = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF,
+    private Animation createRotateAnimation(float fromDegrees, float toDegrees) {
+        RotateAnimation animation = new RotateAnimation(fromDegrees, toDegrees, Animation.RELATIVE_TO_SELF,
                 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setInterpolator(new LinearInterpolator());
         animation.setDuration(300);
@@ -399,7 +410,8 @@ public class RefreshLayout extends RelativeLayout {
             isAutorRefresh = true;
             canPullDown = true;
             state = REFRESHING;
-            headView.startAnimation(createScaleAnimation());
+            if (!isContentMoved())
+                headView.startAnimation(createScaleAnimation());
             updateProgressbar();
             if (refreshListener != null && canPullDown)
                 refreshListener.onRefresh();
@@ -416,7 +428,7 @@ public class RefreshLayout extends RelativeLayout {
             state = REFRESHING;
             canPullUp = true;
             Animation animation = createTranslateAnimation();
-            if (animation != null)
+            if (animation != null && !isContentMoved())
                 footView.startAnimation(animation);
             updateProgressbar();
             if (refreshListener != null && canPullUp)

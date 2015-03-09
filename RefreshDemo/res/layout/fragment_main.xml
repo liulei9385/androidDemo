@@ -16,6 +16,13 @@
 
     </com.leilei.refresh.view.RefreshLayout>
 
+    <ProgressBar android:visibility="gone"
+                 android:id="@+id/progressBar"
+                 android:layout_width="45dp"
+                 android:layout_height="45dp"
+                 android:layout_centerInParent="true"
+                 android:indeterminateDrawable="@drawable/custom_progress"/>
+
     <Button android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

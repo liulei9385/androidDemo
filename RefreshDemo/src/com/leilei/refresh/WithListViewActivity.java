@@ -78,6 +78,7 @@ public class WithListViewActivity extends Activity {
             }
         });
 
+        refreshLayout.setContentMoved(true);
     }
 
     private List<String> prepareArrayData() {
